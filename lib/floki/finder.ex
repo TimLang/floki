@@ -34,14 +34,15 @@ defmodule Floki.Finder do
 
   # Not documented yet because it's an experimental API
   def apply_transformation({name, attrs, rest}, transformation) do
-    {new_name, new_attrs} = transformation.({name, attrs})
+    {new_name, new_attrs, older_rest} = transformation.({name, attrs, rest})
 
-    new_rest = Enum.map(rest, fn(html_tree) ->
+    new_rest = Enum.map(older_rest, fn(html_tree) ->
       apply_transformation(html_tree, transformation)
     end)
 
     {new_name, new_attrs, new_rest}
   end
+
   def apply_transformation(other, _transformation), do: other
 
   defp find_selectors(html_tuple_or_list, selectors) do
